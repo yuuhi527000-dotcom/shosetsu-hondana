@@ -32,7 +32,7 @@ header{padding:1.5rem 2rem;border-bottom:1px solid var(--border);display:flex;al
 .work-title{font-family:'Noto Serif JP',serif;font-size:.9rem;font-weight:700;color:var(--ink);text-align:center;line-height:1.5;max-width:150px;margin-top:.25rem}
 .sum-title{font-family:'Noto Serif JP',serif;font-size:.85rem;font-weight:700;color:var(--ink);margin-bottom:.6rem;text-align:center}
 .sum-text{font-size:.75rem;color:var(--ink2);line-height:1.9;text-align:justify}
-.page-num{font-size:.65rem;color:var(--ink3);position:absolute;bottom:10px;font-family:'Zen Kaku Gothic New',sans-serif}
+.page-num{font-size:.65rem;color:var(--ink3);position:absolute;bottom:10px}
 .lp .page-num{left:12px}.rp .page-num{right:12px}
 .fp-front .page-num{right:12px;bottom:10px}.fp-back .page-num{left:12px;bottom:10px}
 .page-label{font-size:.6rem;color:var(--ink3);letter-spacing:.1em;position:absolute;top:10px}
@@ -83,16 +83,16 @@ header{padding:1.5rem 2rem;border-bottom:1px solid var(--border);display:flex;al
 </header>
 <div class="stage-wrap">
   <div class="stage">
-    <div class="book" id="book">
+    <div class="book">
       <div class="spread">
-        <div class="lp" id="lp">
+        <div class="lp">
           <div class="page-label">表紙</div>
           <div id="lpImg"></div>
           <div class="work-title" id="lpTtl">作品タイトル</div>
           <div class="page-num" id="lpNum">1</div>
         </div>
         <div class="spine-line"></div>
-        <div class="rp" id="rp">
+        <div class="rp">
           <div class="page-label">あらすじ</div>
           <div class="sum-title" id="rpTtl"></div>
           <div class="sum-text" id="rpTxt">作品のあらすじがここに表示されます。下のフォームから作品情報を入力してください。</div>
@@ -123,74 +123,59 @@ header{padding:1.5rem 2rem;border-bottom:1px solid var(--border);display:flex;al
   <div class="form-section" id="formSection">
     <div class="form-section-title">作品を編集</div>
     <div id="wlist"></div>
-    <button class="add-work-btn" onclick="addWork()">＋ 作品を追加</button>
+    <button class="add-work-btn" id="addWorkBtn">＋ 作品を追加</button>
   </div>
 </div>
-<input type="file" id="fileInput" accept="image/*" style="display:none" onchange="onFileSelected(event)">
+<input type="file" id="fileInput" accept="image/*" style="display:none">
 
 <script>
 var works=[{title:'',summary:'',imgUrl:'',imgData:'',workUrl:''}];
 var cur=0,animating=false,fileTargetIdx=0;
 
-function scrollToForm(){document.getElementById('formSection').scrollIntoView({behavior:'smooth'});}
+document.getElementById('addWorkBtn').addEventListener('click',function(){
+  works.push({title:'',summary:'',imgUrl:'',imgData:'',workUrl:''});
+  renderForms();
+  renderSpread();
+});
 
-function openFilePicker(i){fileTargetIdx=i;document.getElementById('fileInput').value='';document.getElementById('fileInput').click();}
-
-function onFileSelected(e){
+document.getElementById('fileInput').addEventListener('change',function(e){
   var file=e.target.files[0];if(!file)return;
   var reader=new FileReader();
   reader.onload=function(ev){
     works[fileTargetIdx].imgData=ev.target.result;
     works[fileTargetIdx].imgUrl='';
-    updateImgThumb(fileTargetIdx);
     if(fileTargetIdx===cur)renderSpread();
+    var th=document.getElementById('thumb_'+fileTargetIdx);
+    if(th){
+      var img=document.createElement('img');
+      img.className='img-thumb';img.id='thumb_'+fileTargetIdx;img.src=ev.target.result;
+      th.parentNode.replaceChild(img,th);
+    }
+    var cb=document.getElementById('clrbtn_'+fileTargetIdx);
+    if(cb)cb.style.display='inline';
   };
   reader.readAsDataURL(file);
-}
+});
+
+function scrollToForm(){document.getElementById('formSection').scrollIntoView({behavior:'smooth'});}
 
 function getImgSrc(w){return w.imgData||w.imgUrl||'';}
 
 function defaultSvg(){
-  var svg='<svg width="100" height="130" xmlns="http://www.w3.org/2000/svg">'
+  var s='<svg width="100" height="130" xmlns="http://www.w3.org/2000/svg">'
     +'<rect width="100" height="130" fill="#faf8f5" stroke="#e0d5c8" stroke-width="1"/>'
     +'<rect x="6" y="6" width="88" height="118" fill="none" stroke="#e0d5c8" stroke-width="0.5"/>'
     +'<text x="50" y="72" dominant-baseline="middle" text-anchor="middle" font-size="16" fill="#8b5e3c" font-family="serif" writing-mode="vertical-rl" letter-spacing="6">小説</text>'
     +'</svg>';
-  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
-}
-
-function coverHtml(w,isBook){
-  var src=getImgSrc(w);var url=w.workUrl||'';
-  if(isBook){
-    var img='<img class="cover-img" src="'+esc(src||defaultSvg())+'" alt="表紙">';
-    return url?'<a href="'+esc(url)+'" target="_blank" rel="noopener" style="display:block">'+img+'</a>':img;
-  }
-  if(src)return '<img class="img-thumb" id="thumb_'+works.indexOf(w)+'" src="'+esc(src)+'" alt="">';
-  return '<div class="img-thumb-default" id="thumb_'+works.indexOf(w)+'"><span style="font-size:8px;color:var(--acc);writing-mode:vertical-rl">小説</span></div>';
-}
-
-function thumbHtml(w,i){
-  var src=getImgSrc(w);
-  if(src)return '<img class="img-thumb" id="thumb_'+i+'" src="'+esc(src)+'" alt="">';
-  return '<div class="img-thumb-default" id="thumb_'+i+'"><span style="font-size:8px;color:var(--acc);writing-mode:vertical-rl">小説</span></div>';
-}
-
-function updateImgThumb(i){
-  var el=document.getElementById('thumb_'+i);
-  if(!el)return;
-  var src=getImgSrc(works[i]);
-  if(src){
-    var img=document.createElement('img');
-    img.className='img-thumb';img.id='thumb_'+i;img.src=src;img.alt='';
-    el.parentNode.replaceChild(img,el);
-  }
-  var clrBtn=document.getElementById('clrbtn_'+i);
-  if(clrBtn)clrBtn.style.display=src?'inline':'none';
+  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s);
 }
 
 function renderSpread(){
   var w=works[cur];
-  document.getElementById('lpImg').innerHTML=coverHtml(w,true);
+  var src=getImgSrc(w);
+  var url=w.workUrl||'';
+  var imgTag='<img class="cover-img" src="'+(src||defaultSvg())+'" alt="表紙">';
+  document.getElementById('lpImg').innerHTML=url?'<a href="'+url+'" target="_blank" rel="noopener" style="display:block">'+imgTag+'</a>':imgTag;
   document.getElementById('lpTtl').textContent=w.title||'作品タイトル';
   document.getElementById('lpNum').textContent=(cur*2+1);
   document.getElementById('rpTtl').textContent=w.title||'';
@@ -202,7 +187,9 @@ function renderSpread(){
 }
 
 function setFlip(fw,bw,fn,bn){
-  document.getElementById('fpFrontImg').innerHTML=coverHtml(fw,true);
+  var fs=getImgSrc(fw);var fu=fw.workUrl||'';
+  var fi='<img class="cover-img" src="'+(fs||defaultSvg())+'" alt="表紙">';
+  document.getElementById('fpFrontImg').innerHTML=fu?'<a href="'+fu+'" target="_blank" rel="noopener" style="display:block">'+fi+'</a>':fi;
   document.getElementById('fpTtl').textContent=fw.title||'作品タイトル';
   document.getElementById('fpNumF').textContent=fn;
   document.getElementById('fpBackTtl').textContent=bw.title||'';
@@ -231,83 +218,105 @@ function go(d){
   }
 }
 
-// 入力値の更新（DOMを再生成しない）
-function onTitleInput(i,val){
-  works[i].title=val;
-  if(i===cur){
-    document.getElementById('lpTtl').textContent=val||'作品タイトル';
-    document.getElementById('rpTtl').textContent=val||'';
-  }
-  var lbl=document.getElementById('lbl_'+i);
-  if(lbl)lbl.textContent='作品 '+(i+1)+(i===cur?' ◆':'')+' '+(val?'「'+val+'」':'');
-}
-
-function onSummaryInput(i,val){
-  works[i].summary=val;
-  if(i===cur)document.getElementById('rpTxt').textContent=val||'作品のあらすじがここに表示されます。下のフォームから作品情報を入力してください。';
-  var cnt=document.getElementById('cnt_'+i);
-  if(cnt)cnt.textContent=val.length+'/120字';
-}
-
-function onUrlInput(i,val){
-  works[i].workUrl=val;
-  if(i===cur)renderSpread();
-}
-
-function clearImg(i){
-  works[i].imgData='';works[i].imgUrl='';
-  updateImgThumb(i);
-  if(i===cur)renderSpread();
-  var clrBtn=document.getElementById('clrbtn_'+i);
-  if(clrBtn)clrBtn.style.display='none';
-}
-
-function addWork(){
-  works.push({title:'',summary:'',imgUrl:'',imgData:'',workUrl:''});
-  renderForms();
-  document.getElementById('ind').textContent=(cur+1)+' / '+works.length;
-  document.getElementById('nextBtn').disabled=cur===works.length-1;
-}
-
-function removeWork(i){
-  if(works.length===1)return;
-  works.splice(i,1);
-  if(cur>=works.length)cur=works.length-1;
-  renderForms();renderSpread();
-}
-
-function jumpTo(i){cur=i;renderForms();renderSpread();}
-
 function renderForms(){
   var h='';
   works.forEach(function(w,i){
     var src=getImgSrc(w);var active=i===cur;
-    h+='<div class="work-card">'
+    h+='<div class="work-card" data-idx="'+i+'">'
       +'<div class="work-card-head">'
       +'<span id="lbl_'+i+'" class="work-card-label'+(active?' work-card-active':'')+'">作品 '+(i+1)+(active?' ◆':'')+' '+(w.title?'「'+w.title+'」':'')+'</span>'
       +'<div class="card-actions">'
-      +(!active?'<button class="small-btn" onclick="jumpTo('+i+')">表示</button>':'')
-      +(works.length>1?'<button class="remove-btn" onclick="removeWork('+i+')">✕</button>':'')
+      +(!active?'<button class="small-btn" data-jump="'+i+'">表示</button>':'')
+      +(works.length>1?'<button class="remove-btn" data-remove="'+i+'">✕</button>':'')
       +'</div></div>'
       +'<div class="field"><label>作品名</label>'
-      +'<input type="text" placeholder="タイトルを入力" value="'+esc(w.title)+'" oninput="onTitleInput('+i+',this.value)" maxlength="40"></div>'
+      +'<input type="text" id="inp_title_'+i+'" placeholder="タイトルを入力" value="'+esc(w.title)+'" maxlength="40"></div>'
       +'<div class="field"><label>表紙画像</label>'
-      +'<div class="img-row">'+thumbHtml(w,i)
-      +'<button class="img-sel-btn" onclick="openFilePicker('+i+')">📁 ライブラリから選択</button>'
-      +'<button id="clrbtn_'+i+'" class="remove-btn" onclick="clearImg('+i+')" style="display:'+(src?'inline':'none')+'">✕</button>'
+      +'<div class="img-row">'
+      +(src?'<img class="img-thumb" id="thumb_'+i+'" src="'+src+'" alt="">':'<div class="img-thumb-default" id="thumb_'+i+'"><span style="font-size:8px;color:var(--acc);writing-mode:vertical-rl">小説</span></div>')
+      +'<button class="img-sel-btn" data-pick="'+i+'">📁 ライブラリから選択</button>'
+      +'<button id="clrbtn_'+i+'" class="remove-btn" data-clear="'+i+'" style="display:'+(src?'inline':'none')+'">✕</button>'
       +'</div></div>'
       +'<div class="field"><label>作品URL（なろう・カクヨムなど）<br><small style="font-size:.65rem;color:var(--ink3)">※入力すると表紙タップで作品ページへ</small></label>'
-      +'<input type="text" placeholder="https://..." value="'+esc(w.workUrl)+'" oninput="onUrlInput('+i+',this.value)"></div>'
+      +'<input type="text" id="inp_url_'+i+'" placeholder="https://..." value="'+esc(w.workUrl)+'"></div>'
       +'<div class="field"><label>あらすじ <span class="char-count" id="cnt_'+i+'">'+w.summary.length+'/120字</span></label>'
-      +'<textarea rows="3" maxlength="120" placeholder="作品の魅力を120字以内で..." oninput="onSummaryInput('+i+',this.value)">'+esc(w.summary)+'</textarea></div>'
+      +'<textarea id="inp_sum_'+i+'" rows="3" maxlength="120" placeholder="作品の魅力を120字以内で...">'+esc(w.summary)+'</textarea></div>'
       +'</div>';
   });
   document.getElementById('wlist').innerHTML=h;
+
+  // イベントリスナーをaddEventListenerで付ける（oninputを使わない）
+  works.forEach(function(w,i){
+    var titleEl=document.getElementById('inp_title_'+i);
+    var urlEl=document.getElementById('inp_url_'+i);
+    var sumEl=document.getElementById('inp_sum_'+i);
+
+    titleEl.addEventListener('input',function(){
+      works[i].title=this.value;
+      if(i===cur){
+        document.getElementById('lpTtl').textContent=this.value||'作品タイトル';
+        document.getElementById('rpTtl').textContent=this.value||'';
+      }
+      var lbl=document.getElementById('lbl_'+i);
+      if(lbl)lbl.textContent='作品 '+(i+1)+(i===cur?' ◆':'')+' '+(this.value?'「'+this.value+'」':'');
+    });
+
+    urlEl.addEventListener('input',function(){
+      works[i].workUrl=this.value;
+      if(i===cur)renderSpread();
+    });
+
+    sumEl.addEventListener('input',function(){
+      works[i].summary=this.value;
+      if(i===cur)document.getElementById('rpTxt').textContent=this.value||'作品のあらすじがここに表示されます。下のフォームから作品情報を入力してください。';
+      var cnt=document.getElementById('cnt_'+i);
+      if(cnt)cnt.textContent=this.value.length+'/120字';
+    });
+  });
+
+  // ボタンのイベント
+  document.querySelectorAll('[data-jump]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      cur=parseInt(this.dataset.jump);renderForms();renderSpread();
+    });
+  });
+  document.querySelectorAll('[data-remove]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var i=parseInt(this.dataset.remove);
+      if(works.length===1)return;
+      works.splice(i,1);
+      if(cur>=works.length)cur=works.length-1;
+      renderForms();renderSpread();
+    });
+  });
+  document.querySelectorAll('[data-pick]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      fileTargetIdx=parseInt(this.dataset.pick);
+      document.getElementById('fileInput').value='';
+      document.getElementById('fileInput').click();
+    });
+  });
+  document.querySelectorAll('[data-clear]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var i=parseInt(this.dataset.clear);
+      works[i].imgData='';works[i].imgUrl='';
+      if(i===cur)renderSpread();
+      var th=document.getElementById('thumb_'+i);
+      if(th){
+        var def=document.createElement('div');
+        def.className='img-thumb-default';def.id='thumb_'+i;
+        def.innerHTML='<span style="font-size:8px;color:var(--acc);writing-mode:vertical-rl">小説</span>';
+        th.parentNode.replaceChild(def,th);
+      }
+      this.style.display='none';
+    });
+  });
 }
 
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
 
-renderForms();renderSpread();
+renderForms();
+renderSpread();
 </script>
 </body>
 </html>
