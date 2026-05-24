@@ -264,7 +264,20 @@ function go(d){
 function addWork(){works.push({title:'',summary:'',imgUrl:'',imgData:'',workUrl:''});renderForms();renderSpread();}
 function removeWork(i){if(works.length===1)return;works.splice(i,1);if(cur>=works.length)cur=works.length-1;renderForms();renderSpread();}
 function jumpTo(i){cur=i;renderForms();renderSpread();}
-function updateF(i,key,val){works[i][key]=val;if(i===cur)renderSpread();renderForms();}
+function updateF(i,key,val){
+  works[i][key]=val;
+  if(i===cur)renderSpread();
+  // summaryの文字数カウントだけ更新（DOMを再生成しない）
+  if(key==='summary'){
+    var cnt=document.getElementById('cnt_'+i);
+    if(cnt)cnt.textContent=val.length+'/120字';
+  }
+  // titleの場合はwork-card-labelだけ更新
+  if(key==='title'){
+    var lbl=document.getElementById('lbl_'+i);
+    if(lbl)lbl.textContent='作品 '+(i+1)+(i===cur?' ◆':'')+' '+(val?'「'+val+'」':'');
+  }
+}
 function clearImg(i){works[i].imgData='';works[i].imgUrl='';if(i===cur)renderSpread();renderForms();}
 
 function renderForms(){
@@ -274,7 +287,7 @@ function renderForms(){
     var active=i===cur;
     h+='<div class="work-card">'
       +'<div class="work-card-head">'
-      +'<span class="work-card-label'+(active?' work-card-active':'')+'">作品 '+(i+1)+(active?' ◆':'')+' '+(w.title?'「'+w.title+'」':'')+'</span>'
+      +'<span id="lbl_'+i+'" class="work-card-label'+(active?' work-card-active':'')+'">作品 '+(i+1)+(active?' ◆':'')+' '+(w.title?'「'+w.title+'」':'')+'</span>'
       +'<div class="card-actions">'
       +(!active?'<button class="small-btn" onclick="jumpTo('+i+')">表示</button>':'')
       +(works.length>1?'<button class="remove-btn" onclick="removeWork('+i+')" title="削除">✕</button>':'')
