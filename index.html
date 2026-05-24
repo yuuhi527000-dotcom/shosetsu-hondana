@@ -3,320 +3,323 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>小説の本棚 — 作家のポートフォリオ</title>
-<meta name="description" content="小説家のためのポートフォリオメーカー。作品をペラペラとめくれる本型で紹介できます。">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&family=Zen+Kaku+Gothic+New:wght@300;400&display=swap" rel="stylesheet">
+<title>小説の本棚</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@300;400&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#faf8f5;--paper:#fff;--ink:#1a1510;--ink2:#4a4035;--ink3:#9a8e80;--border:#e0d5c8;--acc:#8b5e3c;--spine:#6b4423}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--ink);font-family:'Zen Kaku Gothic New',sans-serif;min-height:100vh}
-header{padding:1.5rem 2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--paper)}
-.logo{font-family:'Noto Serif JP',serif;font-size:1.4rem;font-weight:500;color:var(--acc);letter-spacing:.06em}
-.logo span{font-size:.75rem;color:var(--ink3);font-family:'Zen Kaku Gothic New',sans-serif;font-weight:300;display:block;letter-spacing:.1em;margin-top:2px}
-.header-btn{padding:.45rem 1.25rem;border:1px solid var(--acc);color:var(--acc);background:transparent;border-radius:2px;font-size:.8rem;cursor:pointer;font-family:'Zen Kaku Gothic New',sans-serif;letter-spacing:.06em;transition:all .2s}
-.header-btn:hover{background:var(--acc);color:#fff}
-.stage-wrap{display:flex;flex-direction:column;align-items:center;padding:3rem 1rem 2rem}
-.stage{-webkit-perspective:1400px;perspective:1400px;margin-bottom:2rem}
-.book{position:relative;width:560px;height:320px;-webkit-transform-style:preserve-3d;transform-style:preserve-3d}
-.spread{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;box-shadow:0 8px 24px rgba(0,0,0,.12)}
-.lp,.rp{width:50%;height:100%;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;background:var(--paper);overflow:hidden}
+header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);background:var(--paper);display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Noto Serif JP',serif;font-size:1.3rem;font-weight:500;color:var(--acc)}
+.logo small{display:block;font-size:.65rem;color:var(--ink3);font-family:'Zen Kaku Gothic New',sans-serif;letter-spacing:.1em;margin-top:2px}
+.hbtn{padding:.4rem 1rem;border:1px solid var(--acc);color:var(--acc);background:transparent;border-radius:2px;font-size:.75rem;cursor:pointer;font-family:'Zen Kaku Gothic New',sans-serif}
+.wrap{display:flex;flex-direction:column;align-items:center;padding:2rem 1rem}
+
+/* 本 */
+.stage{margin-bottom:1.5rem;width:100%;display:flex;justify-content:center}
+.book{position:relative;width:540px;height:300px}
+.spread{position:absolute;inset:0;display:flex;box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.lp,.rp{width:50%;height:100%;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.25rem;overflow:hidden;background:var(--paper)}
 .lp{border:1px solid var(--border);border-right:none;border-radius:4px 0 0 4px}
 .rp{border:1px solid var(--border);border-left:none;border-radius:0 4px 4px 0;background:#fefcfa}
-.spine-line{position:absolute;left:50%;top:0;width:4px;height:100%;background:linear-gradient(to right,#b8986a,var(--spine),#b8986a);transform:translateX(-50%);z-index:20;pointer-events:none;box-shadow:2px 0 6px rgba(0,0,0,.2)}
-.flip-page{position:absolute;top:0;right:0;width:50%;height:100%;-webkit-transform-origin:left center;transform-origin:left center;-webkit-transform-style:preserve-3d;transform-style:preserve-3d;z-index:15;pointer-events:none;}
-.fp-front,.fp-back{position:absolute;top:0;left:0;width:100%;height:100%;-webkit-backface-visibility:hidden;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;background:var(--paper);border:1px solid var(--border);border-left:none;border-radius:0 4px 4px 0;overflow:hidden}
-.fp-back{transform:rotateY(180deg);border-radius:4px 0 0 4px;border-left:1px solid var(--border);border-right:none;background:#fefcfa}
-.cover-img{width:100px;height:130px;object-fit:cover;border-radius:2px;border:1px solid var(--border);margin-bottom:.6rem;cursor:pointer;display:block;transition:opacity .2s}
-.cover-img:hover{opacity:.85}
-.work-title{font-family:'Noto Serif JP',serif;font-size:.9rem;font-weight:700;color:var(--ink);text-align:center;line-height:1.5;max-width:150px;margin-top:.25rem}
-.sum-title{font-family:'Noto Serif JP',serif;font-size:.85rem;font-weight:700;color:var(--ink);margin-bottom:.6rem;text-align:center}
-.sum-text{font-size:.75rem;color:var(--ink2);line-height:1.9;text-align:justify}
-.page-num{font-size:.65rem;color:var(--ink3);position:absolute;bottom:10px}
-.lp .page-num{left:12px}.rp .page-num{right:12px}
-.fp-front .page-num{right:12px;bottom:10px}.fp-back .page-num{left:12px;bottom:10px}
-.page-label{font-size:.6rem;color:var(--ink3);letter-spacing:.1em;position:absolute;top:10px}
-.lp .page-label{right:12px}.rp .page-label{left:12px}
-.controls{display:flex;gap:.75rem;align-items:center;margin-bottom:1rem}
-.nav-btn{padding:.5rem 1.5rem;border:1px solid var(--border);background:var(--paper);border-radius:2px;font-size:.8rem;cursor:pointer;color:var(--ink2);font-family:'Zen Kaku Gothic New',sans-serif;transition:all .2s;letter-spacing:.04em}
-.nav-btn:hover:not(:disabled){border-color:var(--acc);color:var(--acc)}
-.nav-btn:disabled{opacity:.3;cursor:default}
-.page-ind{font-size:.8rem;color:var(--ink3);min-width:60px;text-align:center;letter-spacing:.06em}
-.form-section{width:100%;max-width:580px;background:var(--paper);border:1px solid var(--border);border-radius:4px;padding:1.5rem}
-.form-section-title{font-family:'Noto Serif JP',serif;font-size:.95rem;font-weight:500;color:var(--ink);margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
-.work-card{border:1px solid var(--border);border-radius:2px;padding:1rem;margin-bottom:.75rem}
-.work-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
-.work-card-label{font-size:.75rem;font-weight:500;color:var(--ink3);letter-spacing:.06em}
-.work-card-active{color:var(--acc)}
-.card-actions{display:flex;gap:.4rem}
-.small-btn{padding:.2rem .6rem;border:1px solid var(--border);border-radius:2px;background:transparent;font-size:.7rem;cursor:pointer;color:var(--ink3);font-family:'Zen Kaku Gothic New',sans-serif;transition:all .15s}
-.small-btn:hover{border-color:var(--acc);color:var(--acc)}
-.remove-btn{border:none;background:none;cursor:pointer;color:var(--ink3);font-size:.8rem;padding:.1rem .3rem}
-.remove-btn:hover{color:#c0392b}
-.field{margin-bottom:.65rem}
-.field label{font-size:.72rem;color:var(--ink3);display:block;margin-bottom:.25rem;letter-spacing:.04em}
-.field input,.field textarea{width:100%;padding:.45rem .6rem;border:1px solid var(--border);border-radius:2px;font-size:.8rem;background:var(--bg);color:var(--ink);resize:none;font-family:'Zen Kaku Gothic New',sans-serif;transition:border-color .15s}
-.field input:focus,.field textarea:focus{outline:none;border-color:var(--acc)}
-.img-row{display:flex;gap:.5rem;align-items:center}
-.img-sel-btn{padding:.3rem .7rem;border:1px solid var(--border);border-radius:2px;font-size:.7rem;cursor:pointer;background:transparent;color:var(--ink3);font-family:'Zen Kaku Gothic New',sans-serif;white-space:nowrap;transition:all .15s}
-.img-sel-btn:hover{border-color:var(--acc);color:var(--acc)}
-.img-thumb{width:28px;height:36px;object-fit:cover;border-radius:1px;border:1px solid var(--border)}
-.img-thumb-default{width:28px;height:36px;border-radius:1px;border:1px solid var(--border);background:var(--paper);display:flex;align-items:center;justify-content:center}
-.char-count{font-size:.65rem;color:var(--ink3);float:right}
-.add-work-btn{width:100%;padding:.6rem;border:1px dashed var(--border);border-radius:2px;background:transparent;color:var(--ink3);font-size:.8rem;cursor:pointer;font-family:'Zen Kaku Gothic New',sans-serif;letter-spacing:.06em;transition:all .2s;margin-top:.5rem}
-.add-work-btn:hover{border-color:var(--acc);color:var(--acc)}
-@media(max-width:620px){
-  .book{width:320px;height:190px}
-  .cover-img{width:60px;height:78px}
-  .work-title{font-size:.75rem}
-  .sum-text{font-size:.65rem}
-  .lp,.rp,.fp-front,.fp-back{padding:.75rem}
+.spine{position:absolute;left:50%;top:0;width:4px;height:100%;background:linear-gradient(to right,#b8986a,var(--spine),#b8986a);transform:translateX(-50%);z-index:10}
+.fp{position:absolute;top:0;right:0;width:50%;height:100%;z-index:15;display:none}
+.fp-inner{position:absolute;inset:0;-webkit-transform-style:preserve-3d;transform-style:preserve-3d;-webkit-transform-origin:left center;transform-origin:left center}
+.fp-f,.fp-b{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.25rem;-webkit-backface-visibility:hidden;backface-visibility:hidden;overflow:hidden;background:var(--paper);border:1px solid var(--border)}
+.fp-f{border-left:none;border-radius:0 4px 4px 0}
+.fp-b{border-left:1px solid var(--border);border-right:none;border-radius:4px 0 0 4px;background:#fefcfa;-webkit-transform:rotateY(180deg);transform:rotateY(180deg)}
+.cover-img{width:90px;height:115px;object-fit:cover;border-radius:2px;border:1px solid var(--border);margin-bottom:.5rem;display:block}
+.ttl{font-family:'Noto Serif JP',serif;font-size:.85rem;font-weight:700;text-align:center;line-height:1.5;max-width:140px}
+.sum-ttl{font-family:'Noto Serif JP',serif;font-size:.8rem;font-weight:700;margin-bottom:.5rem;text-align:center}
+.sum-txt{font-size:.7rem;color:var(--ink2);line-height:1.9;text-align:justify}
+.pnum{font-size:.6rem;color:var(--ink3);position:absolute;bottom:8px}
+.lp .pnum{left:10px}.rp .pnum{right:10px}
+.plbl{font-size:.55rem;color:var(--ink3);letter-spacing:.1em;position:absolute;top:8px}
+.lp .plbl{right:10px}.rp .plbl{left:10px}
+.fp-f .pnum{right:10px}.fp-b .pnum{left:10px}
+.fp-f .plbl{right:10px;top:8px}.fp-b .plbl{left:10px;top:8px}
+
+/* コントロール */
+.ctrls{display:flex;gap:.6rem;align-items:center;margin-bottom:1.25rem}
+.nbtn{padding:.45rem 1.25rem;border:1px solid var(--border);background:var(--paper);border-radius:2px;font-size:.75rem;cursor:pointer;color:var(--ink2);font-family:'Zen Kaku Gothic New',sans-serif;transition:all .15s}
+.nbtn:not(:disabled):hover{border-color:var(--acc);color:var(--acc)}
+.nbtn:disabled{opacity:.3;cursor:default}
+.ind{font-size:.75rem;color:var(--ink3);min-width:55px;text-align:center}
+
+/* フォーム */
+.fsec{width:100%;max-width:560px;background:var(--paper);border:1px solid var(--border);border-radius:4px;padding:1.25rem}
+.fsec-ttl{font-family:'Noto Serif JP',serif;font-size:.9rem;font-weight:500;color:var(--ink);margin-bottom:1rem;padding-bottom:.6rem;border-bottom:1px solid var(--border)}
+.wcard{border:1px solid var(--border);border-radius:2px;padding:.875rem;margin-bottom:.6rem}
+.wcard-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem}
+.wlbl{font-size:.7rem;font-weight:500;color:var(--ink3)}
+.wlbl.act{color:var(--acc)}
+.acts{display:flex;gap:.3rem}
+.sbtn{padding:.18rem .55rem;border:1px solid var(--border);border-radius:2px;background:transparent;font-size:.65rem;cursor:pointer;color:var(--ink3);font-family:'Zen Kaku Gothic New',sans-serif}
+.rbtn{border:none;background:none;cursor:pointer;color:var(--ink3);font-size:.75rem;padding:.1rem .25rem}
+.rbtn:hover{color:#c0392b}
+.fld{margin-bottom:.55rem}
+.fld label{font-size:.68rem;color:var(--ink3);display:block;margin-bottom:.2rem}
+.fld input,.fld textarea{width:100%;padding:.4rem .55rem;border:1px solid var(--border);border-radius:2px;font-size:.8rem;background:var(--bg);color:var(--ink);resize:none;font-family:'Zen Kaku Gothic New',sans-serif}
+.fld input:focus,.fld textarea:focus{outline:none;border-color:var(--acc)}
+.irow{display:flex;gap:.4rem;align-items:center}
+.ithumb{width:26px;height:33px;object-fit:cover;border-radius:1px;border:1px solid var(--border);flex-shrink:0}
+.ithumb-def{width:26px;height:33px;border-radius:1px;border:1px solid var(--border);background:var(--paper);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pckbtn{padding:.28rem .6rem;border:1px solid var(--border);border-radius:2px;font-size:.65rem;cursor:pointer;background:transparent;color:var(--ink3);font-family:'Zen Kaku Gothic New',sans-serif;white-space:nowrap}
+.cc{font-size:.6rem;color:var(--ink3);float:right}
+.addbtn{width:100%;padding:.55rem;border:1px dashed var(--border);border-radius:2px;background:transparent;color:var(--ink3);font-size:.75rem;cursor:pointer;font-family:'Zen Kaku Gothic New',sans-serif;margin-top:.4rem}
+
+@media(max-width:580px){
+  .book{width:300px;height:175px}
+  .cover-img{width:55px;height:70px}
+  .lp,.rp,.fp-f,.fp-b{padding:.75rem}
+  .ttl{font-size:.72rem}.sum-txt{font-size:.62rem}
   header{padding:1rem}
-  .stage-wrap{padding:1.5rem .75rem 1rem}
 }
 </style>
 </head>
 <body>
 <header>
-  <div class="logo">小説の本棚<span>NOVEL PORTFOLIO MAKER</span></div>
-  <button class="header-btn" onclick="scrollToForm()">作品を編集</button>
+  <div class="logo">小説の本棚<small>NOVEL PORTFOLIO MAKER</small></div>
+  <button class="hbtn" onclick="document.getElementById('fsec').scrollIntoView({behavior:'smooth'})">作品を編集</button>
 </header>
-<div class="stage-wrap">
+
+<div class="wrap">
   <div class="stage">
     <div class="book">
       <div class="spread">
         <div class="lp">
-          <div class="page-label">表紙</div>
+          <div class="plbl">表紙</div>
           <div id="lpImg"></div>
-          <div class="work-title" id="lpTtl">作品タイトル</div>
-          <div class="page-num" id="lpNum">1</div>
+          <div class="ttl" id="lpTtl">作品タイトル</div>
+          <div class="pnum" id="lpNum">1</div>
         </div>
-        <div class="spine-line"></div>
+        <div class="spine"></div>
         <div class="rp">
-          <div class="page-label">あらすじ</div>
-          <div class="sum-title" id="rpTtl"></div>
-          <div class="sum-text" id="rpTxt">作品のあらすじがここに表示されます。下のフォームから作品情報を入力してください。</div>
-          <div class="page-num" id="rpNum">2</div>
+          <div class="plbl">あらすじ</div>
+          <div class="sum-ttl" id="rpTtl"></div>
+          <div class="sum-txt" id="rpTxt">あらすじがここに表示されます。下のフォームから入力してください。</div>
+          <div class="pnum" id="rpNum">2</div>
         </div>
       </div>
-      <div class="flip-page" id="fp" style="display:none">
-        <div class="fp-front">
-          <div class="page-label">表紙</div>
-          <div id="fpFrontImg"></div>
-          <div class="work-title" id="fpTtl"></div>
-          <div class="page-num" id="fpNumF"></div>
-        </div>
-        <div class="fp-back">
-          <div class="page-label">あらすじ</div>
-          <div class="sum-title" id="fpBackTtl"></div>
-          <div class="sum-text" id="fpBackTxt"></div>
-          <div class="page-num" id="fpNumB"></div>
+      <div class="fp" id="fp">
+        <div class="fp-inner" id="fpInner">
+          <div class="fp-f">
+            <div class="plbl">表紙</div>
+            <div id="fpFImg"></div>
+            <div class="ttl" id="fpFTtl"></div>
+            <div class="pnum" id="fpFNum"></div>
+          </div>
+          <div class="fp-b">
+            <div class="plbl">あらすじ</div>
+            <div class="sum-ttl" id="fpBTtl"></div>
+            <div class="sum-txt" id="fpBTxt"></div>
+            <div class="pnum" id="fpBNum"></div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="controls">
-    <button class="nav-btn" id="prevBtn" onclick="go(-1)" disabled>◀ 前の作品</button>
-    <span class="page-ind" id="ind">1 / 1</span>
-    <button class="nav-btn" id="nextBtn" onclick="go(1)" disabled>次の作品 ▶</button>
+
+  <div class="ctrls">
+    <button class="nbtn" id="prevBtn" disabled>◀ 前</button>
+    <span class="ind" id="ind">1 / 1</span>
+    <button class="nbtn" id="nextBtn" disabled>次 ▶</button>
   </div>
-  <div class="form-section" id="formSection">
-    <div class="form-section-title">作品を編集</div>
+
+  <div class="fsec" id="fsec">
+    <div class="fsec-ttl">作品を編集</div>
     <div id="wlist"></div>
-    <button class="add-work-btn" id="addWorkBtn">＋ 作品を追加</button>
+    <button class="addbtn" id="addBtn">＋ 作品を追加</button>
   </div>
 </div>
-<input type="file" id="fileInput" accept="image/*" style="display:none">
+
+<input type="file" id="filePicker" accept="image/*" style="display:none">
 
 <script>
-var works=[{title:'',summary:'',imgUrl:'',imgData:'',workUrl:''}];
-var cur=0,animating=false,fileTargetIdx=0;
+var W=[{title:'',summary:'',imgData:'',workUrl:''}];
+var cur=0,busy=false,pickIdx=0;
 
-document.getElementById('addWorkBtn').addEventListener('click',function(){
-  works.push({title:'',summary:'',imgUrl:'',imgData:'',workUrl:''});
-  renderForms();
-  renderSpread();
-});
+// ナビ
+document.getElementById('prevBtn').addEventListener('click',function(){flip(-1);});
+document.getElementById('nextBtn').addEventListener('click',function(){flip(1);});
+document.getElementById('addBtn').addEventListener('click',addWork);
+document.getElementById('filePicker').addEventListener('change',onPick);
 
-document.getElementById('fileInput').addEventListener('change',function(e){
-  var file=e.target.files[0];if(!file)return;
-  var reader=new FileReader();
-  reader.onload=function(ev){
-    works[fileTargetIdx].imgData=ev.target.result;
-    works[fileTargetIdx].imgUrl='';
-    if(fileTargetIdx===cur)renderSpread();
-    var th=document.getElementById('thumb_'+fileTargetIdx);
-    if(th){
-      var img=document.createElement('img');
-      img.className='img-thumb';img.id='thumb_'+fileTargetIdx;img.src=ev.target.result;
-      th.parentNode.replaceChild(img,th);
-    }
-    var cb=document.getElementById('clrbtn_'+fileTargetIdx);
-    if(cb)cb.style.display='inline';
+function addWork(){
+  W.push({title:'',summary:'',imgData:'',workUrl:''});
+  buildCards();
+  updateNav();
+}
+
+function onPick(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    W[pickIdx].imgData=ev.target.result;
+    var th=document.getElementById('th'+pickIdx);
+    if(th){var img=document.createElement('img');img.className='ithumb';img.id='th'+pickIdx;img.src=ev.target.result;th.parentNode.replaceChild(img,th);}
+    var cb=document.getElementById('cb'+pickIdx);if(cb)cb.style.display='';
+    if(pickIdx===cur)refreshBook();
   };
-  reader.readAsDataURL(file);
-});
+  r.readAsDataURL(f);
+}
 
-function scrollToForm(){document.getElementById('formSection').scrollIntoView({behavior:'smooth'});}
+function imgSrc(w){return w.imgData||'';}
 
-function getImgSrc(w){return w.imgData||w.imgUrl||'';}
-
-function defaultSvg(){
-  var s='<svg width="100" height="130" xmlns="http://www.w3.org/2000/svg">'
-    +'<rect width="100" height="130" fill="#faf8f5" stroke="#e0d5c8" stroke-width="1"/>'
-    +'<rect x="6" y="6" width="88" height="118" fill="none" stroke="#e0d5c8" stroke-width="0.5"/>'
-    +'<text x="50" y="72" dominant-baseline="middle" text-anchor="middle" font-size="16" fill="#8b5e3c" font-family="serif" writing-mode="vertical-rl" letter-spacing="6">小説</text>'
-    +'</svg>';
+function defSvg(){
+  var s='<svg width="90" height="115" xmlns="http://www.w3.org/2000/svg"><rect width="90" height="115" fill="#faf8f5" stroke="#e0d5c8"/><rect x="5" y="5" width="80" height="105" fill="none" stroke="#e0d5c8" stroke-width="0.5"/><text x="45" y="62" dominant-baseline="middle" text-anchor="middle" font-size="14" fill="#8b5e3c" font-family="serif" writing-mode="vertical-rl" letter-spacing="5">小説</text></svg>';
   return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s);
 }
 
-function renderSpread(){
-  var w=works[cur];
-  var src=getImgSrc(w);
-  var url=w.workUrl||'';
-  var imgTag='<img class="cover-img" src="'+(src||defaultSvg())+'" alt="表紙">';
-  document.getElementById('lpImg').innerHTML=url?'<a href="'+url+'" target="_blank" rel="noopener" style="display:block">'+imgTag+'</a>':imgTag;
+function coverEl(w){
+  var src=imgSrc(w)||defSvg();
+  var img='<img class="cover-img" src="'+src+'" alt="">';
+  return w.workUrl?'<a href="'+w.workUrl+'" target="_blank" rel="noopener" style="display:block">'+img+'</a>':img;
+}
+
+function refreshBook(){
+  var w=W[cur];
+  document.getElementById('lpImg').innerHTML=coverEl(w);
   document.getElementById('lpTtl').textContent=w.title||'作品タイトル';
-  document.getElementById('lpNum').textContent=(cur*2+1);
+  document.getElementById('lpNum').textContent=cur*2+1;
   document.getElementById('rpTtl').textContent=w.title||'';
-  document.getElementById('rpTxt').textContent=w.summary||'作品のあらすじがここに表示されます。下のフォームから作品情報を入力してください。';
-  document.getElementById('rpNum').textContent=(cur*2+2);
-  document.getElementById('ind').textContent=(cur+1)+' / '+works.length;
+  document.getElementById('rpTxt').textContent=w.summary||'あらすじがここに表示されます。下のフォームから入力してください。';
+  document.getElementById('rpNum').textContent=cur*2+2;
+}
+
+function updateNav(){
+  document.getElementById('ind').textContent=(cur+1)+' / '+W.length;
   document.getElementById('prevBtn').disabled=cur===0;
-  document.getElementById('nextBtn').disabled=cur===works.length-1;
+  document.getElementById('nextBtn').disabled=cur===W.length-1;
 }
 
-function setFlip(fw,bw,fn,bn){
-  var fs=getImgSrc(fw);var fu=fw.workUrl||'';
-  var fi='<img class="cover-img" src="'+(fs||defaultSvg())+'" alt="表紙">';
-  document.getElementById('fpFrontImg').innerHTML=fu?'<a href="'+fu+'" target="_blank" rel="noopener" style="display:block">'+fi+'</a>':fi;
-  document.getElementById('fpTtl').textContent=fw.title||'作品タイトル';
-  document.getElementById('fpNumF').textContent=fn;
-  document.getElementById('fpBackTtl').textContent=bw.title||'';
-  document.getElementById('fpBackTxt').textContent=bw.summary||'あらすじがここに表示されます。';
-  document.getElementById('fpNumB').textContent=bn;
+function flip(d){
+  if(busy)return;
+  var next=cur+d;if(next<0||next>=W.length)return;
+  busy=true;
+  var fp=document.getElementById('fp');
+  var fi=document.getElementById('fpInner');
+  var fw=d>0?W[cur]:W[next];
+  var bw=d>0?W[next]:W[cur];
+  var fn=d>0?cur*2+2:next*2+1;
+  var bn=d>0?next*2+1:cur*2+2;
+  document.getElementById('fpFImg').innerHTML=coverEl(fw);
+  document.getElementById('fpFTtl').textContent=fw.title||'作品タイトル';
+  document.getElementById('fpFNum').textContent=fn;
+  document.getElementById('fpBTtl').textContent=bw.title||'';
+  document.getElementById('fpBTxt').textContent=bw.summary||'あらすじがここに表示されます。';
+  document.getElementById('fpBNum').textContent=bn;
+  fp.style.display='block';
+  fi.style.transition='none';
+  fi.style.webkitTransition='none';
+  var startRot=d>0?'rotateY(0deg)':'rotateY(-180deg)';
+  var endRot=d>0?'rotateY(-180deg)':'rotateY(0deg)';
+  fi.style.webkitTransform=startRot;fi.style.transform=startRot;
+  requestAnimationFrame(function(){requestAnimationFrame(function(){
+    fi.style.transition='transform 0.6s cubic-bezier(.4,0,.2,1)';
+    fi.style.webkitTransition='-webkit-transform 0.6s cubic-bezier(.4,0,.2,1)';
+    fi.style.webkitTransform=endRot;fi.style.transform=endRot;
+    setTimeout(function(){
+      cur=next;refreshBook();updateNav();fp.style.display='none';busy=false;
+    },640);
+  });});
 }
 
-function go(d){
-  if(animating)return;
-  var next=cur+d;if(next<0||next>=works.length)return;
-  var fp=document.getElementById('fp');animating=true;
-  if(d>0){
-    setFlip(works[cur],works[next],(cur*2+2),(next*2+1));
-    fp.style.display='block';fp.style.webkitTransition='none';fp.style.transition='none';fp.style.webkitTransform='rotateY(0deg)';fp.style.transform='rotateY(0deg)';
-    requestAnimationFrame(function(){requestAnimationFrame(function(){
-      fp.style.webkitTransition='-webkit-transform 0.65s';fp.style.transition='transform 0.65s cubic-bezier(.4,0,.2,1)';fp.style.webkitTransform='rotateY(-180deg)';fp.style.transform='rotateY(-180deg)';
-      setTimeout(function(){cur=next;renderSpread();fp.style.display='none';animating=false;},680);
-    });});
-  } else {
-    setFlip(works[next],works[cur],(next*2+2),(cur*2+1));
-    fp.style.display='block';fp.style.webkitTransition='none';fp.style.transition='none';fp.style.webkitTransform='rotateY(-180deg)';fp.style.transform='rotateY(-180deg)';
-    requestAnimationFrame(function(){requestAnimationFrame(function(){
-      fp.style.webkitTransition='-webkit-transform 0.65s';fp.style.transition='transform 0.65s cubic-bezier(.4,0,.2,1)';fp.style.webkitTransform='rotateY(0deg)';fp.style.transform='rotateY(0deg)';
-      setTimeout(function(){cur=next;renderSpread();fp.style.display='none';animating=false;},680);
-    });});
+function buildCards(){
+  // 既存カードを保持しながら増減に対応
+  var list=document.getElementById('wlist');
+  // 必要なカード数に合わせてDOMを調整
+  while(list.children.length<W.length){
+    var idx=list.children.length;
+    list.appendChild(makeCard(idx));
+  }
+  while(list.children.length>W.length){
+    list.removeChild(list.lastChild);
+  }
+  // 各カードの表示を更新
+  for(var i=0;i<W.length;i++){
+    updateCardDisplay(i);
   }
 }
 
-function renderForms(){
-  var h='';
-  works.forEach(function(w,i){
-    var src=getImgSrc(w);var active=i===cur;
-    h+='<div class="work-card" data-idx="'+i+'">'
-      +'<div class="work-card-head">'
-      +'<span id="lbl_'+i+'" class="work-card-label'+(active?' work-card-active':'')+'">作品 '+(i+1)+(active?' ◆':'')+' '+(w.title?'「'+w.title+'」':'')+'</span>'
-      +'<div class="card-actions">'
-      +(!active?'<button class="small-btn" data-jump="'+i+'">表示</button>':'')
-      +(works.length>1?'<button class="remove-btn" data-remove="'+i+'">✕</button>':'')
-      +'</div></div>'
-      +'<div class="field"><label>作品名</label>'
-      +'<input type="text" id="inp_title_'+i+'" placeholder="タイトルを入力" value="'+esc(w.title)+'" maxlength="40"></div>'
-      +'<div class="field"><label>表紙画像</label>'
-      +'<div class="img-row">'
-      +(src?'<img class="img-thumb" id="thumb_'+i+'" src="'+src+'" alt="">':'<div class="img-thumb-default" id="thumb_'+i+'"><span style="font-size:8px;color:var(--acc);writing-mode:vertical-rl">小説</span></div>')
-      +'<button class="img-sel-btn" data-pick="'+i+'">📁 ライブラリから選択</button>'
-      +'<button id="clrbtn_'+i+'" class="remove-btn" data-clear="'+i+'" style="display:'+(src?'inline':'none')+'">✕</button>'
-      +'</div></div>'
-      +'<div class="field"><label>作品URL（なろう・カクヨムなど）<br><small style="font-size:.65rem;color:var(--ink3)">※入力すると表紙タップで作品ページへ</small></label>'
-      +'<input type="text" id="inp_url_'+i+'" placeholder="https://..." value="'+esc(w.workUrl)+'"></div>'
-      +'<div class="field"><label>あらすじ <span class="char-count" id="cnt_'+i+'">'+w.summary.length+'/120字</span></label>'
-      +'<textarea id="inp_sum_'+i+'" rows="3" maxlength="120" placeholder="作品の魅力を120字以内で...">'+esc(w.summary)+'</textarea></div>'
-      +'</div>';
-  });
-  document.getElementById('wlist').innerHTML=h;
+function makeCard(i){
+  var div=document.createElement('div');
+  div.className='wcard';div.id='card'+i;
 
-  // イベントリスナーをaddEventListenerで付ける（oninputを使わない）
-  works.forEach(function(w,i){
-    var titleEl=document.getElementById('inp_title_'+i);
-    var urlEl=document.getElementById('inp_url_'+i);
-    var sumEl=document.getElementById('inp_sum_'+i);
+  div.innerHTML='<div class="wcard-head"><span class="wlbl" id="wlbl'+i+'">作品 '+(i+1)+'</span><div class="acts"><button class="sbtn" id="jbtn'+i+'">表示</button><button class="rbtn" id="rmbtn'+i+'">✕</button></div></div>'
+    +'<div class="fld"><label>作品名</label><input type="text" id="ti'+i+'" placeholder="タイトルを入力" maxlength="40"></div>'
+    +'<div class="fld"><label>表紙画像</label><div class="irow"><div class="ithumb-def" id="th'+i+'"><span style="font-size:7px;color:var(--acc);writing-mode:vertical-rl">小説</span></div><button class="pckbtn" id="pb'+i+'">📁 選択</button><button class="rbtn" id="cb'+i+'" style="display:none">✕</button></div></div>'
+    +'<div class="fld"><label>作品URL（なろう・カクヨムなど）</label><input type="text" id="ui'+i+'" placeholder="https://..."></div>'
+    +'<div class="fld"><label>あらすじ <span class="cc" id="cc'+i+'">0/120字</span></label><textarea id="si'+i+'" rows="3" maxlength="120" placeholder="作品の魅力を120字以内で..."></textarea></div>';
 
-    titleEl.addEventListener('input',function(){
-      works[i].title=this.value;
-      if(i===cur){
-        document.getElementById('lpTtl').textContent=this.value||'作品タイトル';
-        document.getElementById('rpTtl').textContent=this.value||'';
-      }
-      var lbl=document.getElementById('lbl_'+i);
-      if(lbl)lbl.textContent='作品 '+(i+1)+(i===cur?' ◆':'')+' '+(this.value?'「'+this.value+'」':'');
+  // イベント（クロージャでiを固定）
+  (function(idx){
+    div.querySelector('#jbtn'+idx).addEventListener('click',function(){cur=idx;refreshBook();updateNav();updateAllLabels();});
+    div.querySelector('#rmbtn'+idx).addEventListener('click',function(){
+      if(W.length===1)return;
+      W.splice(idx,1);if(cur>=W.length)cur=W.length-1;
+      rebuildAll();
     });
-
-    urlEl.addEventListener('input',function(){
-      works[i].workUrl=this.value;
-      if(i===cur)renderSpread();
-    });
-
-    sumEl.addEventListener('input',function(){
-      works[i].summary=this.value;
-      if(i===cur)document.getElementById('rpTxt').textContent=this.value||'作品のあらすじがここに表示されます。下のフォームから作品情報を入力してください。';
-      var cnt=document.getElementById('cnt_'+i);
-      if(cnt)cnt.textContent=this.value.length+'/120字';
-    });
-  });
-
-  // ボタンのイベント
-  document.querySelectorAll('[data-jump]').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      cur=parseInt(this.dataset.jump);renderForms();renderSpread();
-    });
-  });
-  document.querySelectorAll('[data-remove]').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      var i=parseInt(this.dataset.remove);
-      if(works.length===1)return;
-      works.splice(i,1);
-      if(cur>=works.length)cur=works.length-1;
-      renderForms();renderSpread();
-    });
-  });
-  document.querySelectorAll('[data-pick]').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      fileTargetIdx=parseInt(this.dataset.pick);
-      document.getElementById('fileInput').value='';
-      document.getElementById('fileInput').click();
-    });
-  });
-  document.querySelectorAll('[data-clear]').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      var i=parseInt(this.dataset.clear);
-      works[i].imgData='';works[i].imgUrl='';
-      if(i===cur)renderSpread();
-      var th=document.getElementById('thumb_'+i);
-      if(th){
-        var def=document.createElement('div');
-        def.className='img-thumb-default';def.id='thumb_'+i;
-        def.innerHTML='<span style="font-size:8px;color:var(--acc);writing-mode:vertical-rl">小説</span>';
-        th.parentNode.replaceChild(def,th);
-      }
+    div.querySelector('#pb'+idx).addEventListener('click',function(){pickIdx=idx;document.getElementById('filePicker').value='';document.getElementById('filePicker').click();});
+    div.querySelector('#cb'+idx).addEventListener('click',function(){
+      W[idx].imgData='';
+      var th=document.getElementById('th'+idx);
+      if(th){var def=document.createElement('div');def.className='ithumb-def';def.id='th'+idx;def.innerHTML='<span style="font-size:7px;color:var(--acc);writing-mode:vertical-rl">小説</span>';th.parentNode.replaceChild(def,th);}
       this.style.display='none';
+      if(idx===cur)refreshBook();
     });
-  });
+    div.querySelector('#ti'+idx).addEventListener('input',function(){
+      W[idx].title=this.value;
+      if(idx===cur){document.getElementById('lpTtl').textContent=this.value||'作品タイトル';document.getElementById('rpTtl').textContent=this.value||'';}
+      var lbl=document.getElementById('wlbl'+idx);
+      if(lbl)lbl.textContent='作品 '+(idx+1)+(idx===cur?' ◆':'')+' '+(this.value?'「'+this.value+'」':'');
+    });
+    div.querySelector('#ui'+idx).addEventListener('input',function(){W[idx].workUrl=this.value;if(idx===cur)refreshBook();});
+    div.querySelector('#si'+idx).addEventListener('input',function(){
+      W[idx].summary=this.value;
+      if(idx===cur)document.getElementById('rpTxt').textContent=this.value||'あらすじがここに表示されます。下のフォームから入力してください。';
+      var cc=document.getElementById('cc'+idx);if(cc)cc.textContent=this.value.length+'/120字';
+    });
+  })(i);
+
+  return div;
 }
 
-function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+function updateCardDisplay(i){
+  var w=W[i];var active=i===cur;
+  var lbl=document.getElementById('wlbl'+i);
+  if(lbl){lbl.textContent='作品 '+(i+1)+(active?' ◆':'')+' '+(w.title?'「'+w.title+'」':'');lbl.className='wlbl'+(active?' act':'');}
+  var ti=document.getElementById('ti'+i);if(ti&&ti!==document.activeElement)ti.value=w.title||'';
+  var ui=document.getElementById('ui'+i);if(ui&&ui!==document.activeElement)ui.value=w.workUrl||'';
+  var si=document.getElementById('si'+i);if(si&&si!==document.activeElement)si.value=w.summary||'';
+  var cc=document.getElementById('cc'+i);if(cc)cc.textContent=(w.summary||'').length+'/120字';
+  var jbtn=document.getElementById('jbtn'+i);if(jbtn)jbtn.style.display=active?'none':'';
+  if(w.imgData){
+    var th=document.getElementById('th'+i);
+    if(th&&th.tagName!=='IMG'){var img=document.createElement('img');img.className='ithumb';img.id='th'+i;img.src=w.imgData;th.parentNode.replaceChild(img,th);}
+    var cb=document.getElementById('cb'+i);if(cb)cb.style.display='';
+  }
+}
 
-renderForms();
-renderSpread();
+function updateAllLabels(){
+  for(var i=0;i<W.length;i++){
+    var lbl=document.getElementById('wlbl'+i);
+    if(lbl){var w=W[i];lbl.textContent='作品 '+(i+1)+(i===cur?' ◆':'')+' '+(w.title?'「'+w.title+'」':'');lbl.className='wlbl'+(i===cur?' act':'');}
+    var jbtn=document.getElementById('jbtn'+i);if(jbtn)jbtn.style.display=i===cur?'none':'';
+  }
+}
+
+function rebuildAll(){
+  document.getElementById('wlist').innerHTML='';
+  for(var i=0;i<W.length;i++){document.getElementById('wlist').appendChild(makeCard(i));}
+  for(var j=0;j<W.length;j++){updateCardDisplay(j);}
+  refreshBook();updateNav();
+}
+
+// 初期化
+rebuildAll();
+refreshBook();
+updateNav();
 </script>
 </body>
 </html>
